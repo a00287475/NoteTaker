@@ -3,6 +3,9 @@ package com.example.notetaker.android.ui
 import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -42,10 +45,19 @@ fun NoteDashboard(navController: NavController) {
         if (notes.value.isEmpty()) {
             Text(text = "No notes yet", style = MaterialTheme.typography.bodyMedium)
         } else {
-            LazyColumn {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2), // 2 columns for a chessboard-like layout
+                modifier = Modifier.fillMaxWidth(),
+                contentPadding = PaddingValues(8.dp), // Add padding around the grid
+                verticalArrangement = Arrangement.spacedBy(8.dp), // Vertical spacing between items
+                horizontalArrangement = Arrangement.spacedBy(8.dp) // Horizontal spacing between items
+            )
+            {
                 items(notes.value) { note ->
                     NoteItem(note)
                 }
+
+
             }
         }
 
@@ -54,3 +66,5 @@ fun NoteDashboard(navController: NavController) {
 
     }
 }
+
+
