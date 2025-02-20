@@ -13,15 +13,28 @@ import com.example.notetaker.android.model.Note
 import java.io.File
 
 @Composable
-fun NoteTakingScreen(navController: NavController) {
+fun NoteTakingScreen(navController: NavController, noteId: String? = null) {
     var title by remember { mutableStateOf("") }
     var noteText by remember { mutableStateOf("") }
 
     val context = LocalContext.current
 
+    // If noteId is provided, load the note for editing
+    val noteToEdit = noteId?.let { id ->
+        loadNotes(context).find { it.id == id }
+    }
+
+    // If noteToEdit exists, populate fields with the existing note's data
+    noteToEdit?.let {
+        title = it.title
+        noteText = it.content
+    }
+
     Column(modifier = Modifier.padding(16.dp)) {
         Text(
-            text = "Take Notes", style = MaterialTheme.typography.headlineSmall, color = Color.White
+            text = if (noteId == null) "Take Notes" else "Edit Note", // Change header based on edit or new
+            style = MaterialTheme.typography.headlineSmall,
+            color = Color.White
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -48,8 +61,12 @@ fun NoteTakingScreen(navController: NavController) {
         Button(
             onClick = {
                 if (title.isNotBlank() && noteText.isNotBlank()) {
-                    val note = Note(title, noteText)
-                    saveNoteLocally(context, note)
+                    val note = if (noteId == null) {
+                        Note(title = title, content = noteText) // Create new note
+                    } else {
+                        Note(id = noteId, title = title, content = noteText) // Update existing note
+                    }
+                    saveNoteLocally(context, note) // Save note locally (either new or updated)
                     navController.navigate("dashboard") {
                         popUpTo("dashboard") { inclusive = true }
                     }
@@ -61,6 +78,7 @@ fun NoteTakingScreen(navController: NavController) {
         }
     }
 }
+
 
 @Composable
 fun NoteItem(note: Note) {

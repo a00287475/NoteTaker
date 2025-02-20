@@ -19,7 +19,6 @@ import com.example.notetaker.android.model.Note
 
 
 
-//athul testing commit
 @Composable
 fun NoteDashboard(navController: NavController) {
     val context = LocalContext.current
@@ -57,13 +56,28 @@ fun NoteDashboard(navController: NavController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Delete button for selected notes
+        // Edit and Delete buttons for selected notes
         if (selectedNotes.isNotEmpty()) {
+            // Edit button for selected notes
+            Button(
+                onClick = {
+                    // Navigate to the "create_note" screen with the selected note's ID
+                    val noteId = selectedNotes.first().id // Get the ID of the first selected note
+                    navController.navigate("create_note/$noteId")
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Edit Note")
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Delete button for selected notes
             Button(
                 onClick = { deleteSelectedNotes() },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Delete Selected Notes")
+                Text("Delete Notes")
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -99,6 +113,7 @@ fun NoteDashboard(navController: NavController) {
         Spacer(modifier = Modifier.height(16.dp))
     }
 }
+
 
 @Composable
 fun NoteItem(note: Note, isSelected: Boolean, onSelect: (Boolean) -> Unit) {
