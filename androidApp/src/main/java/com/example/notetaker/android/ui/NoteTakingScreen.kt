@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.compose.ui.graphics.Color
 import com.example.notetaker.android.model.Note
 import java.io.File
 
@@ -19,7 +20,9 @@ fun NoteTakingScreen(navController: NavController) {
     val context = LocalContext.current
 
     Column(modifier = Modifier.padding(16.dp)) {
-        Text(text = "Take Notes", style = MaterialTheme.typography.headlineSmall)
+        Text(
+            text = "Take Notes", style = MaterialTheme.typography.headlineSmall, color = Color.White
+        )
 
         Spacer(modifier = Modifier.height(8.dp))
 
