@@ -2,32 +2,27 @@ package com.example.notetaker.android.ui
 
 import android.content.Context
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.notetaker.android.model.Note
 import java.io.File
 
 @Composable
-fun NoteTakingScreen() {
-    var title by remember { mutableStateOf("") } // State for title
-    var noteText by remember { mutableStateOf("") } // State for note content
+fun NoteTakingScreen(navController: NavController) {
+    var title by remember { mutableStateOf("") }
+    var noteText by remember { mutableStateOf("") }
 
-    val context = LocalContext.current // Get the context for file operations
-
-    // Load saved notes when the screen is first displayed
-    var notes by remember { mutableStateOf(loadNotes(context)) }
+    val context = LocalContext.current
 
     Column(modifier = Modifier.padding(16.dp)) {
         Text(text = "Take Notes", style = MaterialTheme.typography.headlineSmall)
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Title Input Field
         TextField(
             value = title,
             onValueChange = { title = it },
@@ -37,7 +32,6 @@ fun NoteTakingScreen() {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Note Content Input
         TextField(
             value = noteText,
             onValueChange = { noteText = it },
@@ -48,30 +42,19 @@ fun NoteTakingScreen() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Save Button
         Button(
             onClick = {
-                if (title.isNotBlank() && noteText.isNotBlank()) { // Ensure both fields are filled
-                    val note = Note(title, noteText) // Create a Note object
-                    saveNoteLocally(context, note) // Save note locally
-                    notes = loadNotes(context) // Reload notes to update the UI
-                    title = "" // Clear title
-                    noteText = "" // Clear content
+                if (title.isNotBlank() && noteText.isNotBlank()) {
+                    val note = Note(title, noteText)
+                    saveNoteLocally(context, note)
+                    navController.navigate("dashboard") {
+                        popUpTo("dashboard") { inclusive = true }
+                    }
                 }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Save")
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Display saved notes
-        LazyColumn {
-            items(notes) { note ->
-                NoteItem(note)
-                Spacer(modifier = Modifier.height(8.dp))
-            }
         }
     }
 }
@@ -87,13 +70,11 @@ fun NoteItem(note: Note) {
     }
 }
 
-// Function to save note locally
 fun saveNoteLocally(context: Context, note: Note) {
     val file = File(context.filesDir, "notes.txt")
     file.appendText("Title: ${note.title}\nContent: ${note.content}\n\n")
 }
 
-// Function to load saved notes
 fun loadNotes(context: Context): List<Note> {
     val file = File(context.filesDir, "notes.txt")
     if (!file.exists()) return emptyList()

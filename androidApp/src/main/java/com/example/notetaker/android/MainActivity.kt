@@ -3,7 +3,7 @@ package com.example.notetaker.android
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import com.example.notetaker.android.ui.NoteTakingScreen
+import com.example.notetaker.android.ui.NoteApp
 import com.google.firebase.database.FirebaseDatabase
 
 class MainActivity : ComponentActivity() {
@@ -13,7 +13,7 @@ class MainActivity : ComponentActivity() {
         FirebaseDatabase.getInstance().setPersistenceEnabled(true)
 
         setContent {
-            NoteTakingScreen()
+            NoteApp() // Use NoteApp to manage the navigation
         }
     }
 }
