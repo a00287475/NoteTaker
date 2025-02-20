@@ -48,6 +48,7 @@ android {
 }
 
 dependencies {
+    
     implementation(projects.shared)
     implementation(libs.compose.ui)
     implementation(libs.compose.ui.tooling.preview)
@@ -63,6 +64,7 @@ dependencies {
     implementation(libs.firebase.ui.auth)
     implementation(libs.firebase.ui.database)
     implementation(platform("com.google.firebase:firebase-bom:33.9.0"))
+
 
 
 }
