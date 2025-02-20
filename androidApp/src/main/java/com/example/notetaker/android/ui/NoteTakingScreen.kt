@@ -32,7 +32,7 @@ fun NoteTakingScreen(navController: NavController, noteId: String? = null) {
 
     Column(modifier = Modifier.padding(16.dp)) {
         Text(
-            text = if (noteId == null) "Take Notes" else "Edit Note", // Change header based on edit or new
+            text = if (noteId == null) "Take Notes" else "Edit Note",
             style = MaterialTheme.typography.headlineSmall,
             color = Color.White
         )
@@ -78,6 +78,8 @@ fun NoteTakingScreen(navController: NavController, noteId: String? = null) {
         }
     }
 }
+
+
 
 
 @Composable

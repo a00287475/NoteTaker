@@ -16,6 +16,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.notetaker.android.model.Note
+import java.io.File
+
 
 
 
@@ -27,8 +29,15 @@ fun NoteDashboard(navController: NavController) {
 
     // Function to delete selected notes
     fun deleteSelectedNotes() {
-        notes = notes.filterNot { it in selectedNotes } // Remove selected notes
-        selectedNotes = emptySet() // Clear selection after deletion
+        // Remove selected notes from the UI
+        notes = notes.filterNot { it in selectedNotes }
+
+        // Remove selected notes from the storage (notes.txt)
+        val updatedNotes = notes.filterNot { it in selectedNotes }
+        saveNotesLocally(context, updatedNotes)
+
+        // Clear selection after deletion
+        selectedNotes = emptySet()
     }
 
     Column(
@@ -48,7 +57,7 @@ fun NoteDashboard(navController: NavController) {
 
         // Button to navigate to NoteTakingScreen to add a new note
         Button(
-            onClick = { navController.navigate("create_note") },
+            onClick = { navController.navigate("create_note") }, // Creating a new note
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Create New Note")
@@ -61,9 +70,11 @@ fun NoteDashboard(navController: NavController) {
             // Edit button for selected notes
             Button(
                 onClick = {
-                    // Navigate to the "create_note" screen with the selected note's ID
-                    val noteId = selectedNotes.first().id // Get the ID of the first selected note
-                    navController.navigate("create_note/$noteId")
+                    // Get the first selected note
+                    val noteToEdit = selectedNotes.first()
+
+                    // Navigate to the NoteTakingScreen with the selected note's ID
+                    navController.navigate("create_note/${noteToEdit.id}") // Ensure the ID is passed correctly
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -113,6 +124,16 @@ fun NoteDashboard(navController: NavController) {
         Spacer(modifier = Modifier.height(16.dp))
     }
 }
+
+fun saveNotesLocally(context: Context, notes: List<Note>) {
+    val file = File(context.filesDir, "notes.txt")
+    file.writeText("") // Clear the existing content
+    notes.forEach { note ->
+        file.appendText("Title: ${note.title}\nContent: ${note.content}\n\n")
+    }
+}
+
+
 
 
 @Composable
